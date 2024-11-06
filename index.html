@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Child of Nasdaq</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Arial', sans-serif;
+            background-color: #1a2b48;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        .container {
+            flex-grow: 1;
+            padding: 20px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        h1, h2 {
+            text-align: center;
+            margin: 10px 0;
+        }
+        .bot-info {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 20px;
+        }
+        .bot-info img {
+            width: 100%;
+            max-width: 300px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+        }
+        .log-section {
+            background-color: #2a3c5b;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 15px;
+        }
+        .log-section ul {
+            list-style: none;
+            padding: 0;
+            max-height: 150px;
+            overflow-y: auto;
+        }
+        .log-section ul li {
+            font-family: monospace;
+            color: #00ff00;
+        }
+        .action-buttons {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 20px;
+        }
+        .action-buttons button {
+            width: 45%;
+            padding: 10px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .btn-trade {
+            background-color: #007bff;
+            color: white;
+        }
+        .btn-settings {
+            background-color: white;
+            color: black;
+        }
+        .btn-connect {
+            background-color: #007bff;
+            color: white;
+            width: 100%;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .nav-bar {
+            display: flex;
+            justify-content: space-around;
+            background-color: #1c2e4a;
+            padding: 10px 0;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+        }
+        .nav-bar button {
+            background: none;
+            border: none;
+            color: white;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .nav-bar button i {
+            font-size: 24px;
+            margin-bottom: 5px;
+        }
+        .nav-bar button:hover {
+            text-decoration: underline;
+        }
+        .form-group {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        .form-group input {
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            margin-left: 10px;
+            border-radius: 5px;
+            border: none;
+        }
+        .form-group i {
+            color: #007bff;
+            font-size: 20px;
+        }
+        .hidden-upload {
+            display: none;
+        }
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container" id="homeScreen">
+        <div class="bot-info">
+            <h2>CHILD OF NASDAQ</h2>
+            <img id="botImage" src="https://via.placeholder.com/300x200" alt="Bot Image">
+            <p>C.O.N-IBOT, 24/7 OPERATION</p>
+            <button onclick="document.getElementById('fileInput').click();">Upload Icon</button>
+            <input type="file" id="fileInput" class="hidden-upload" accept="image/*" onchange="loadImage(event)">
+        </div>
+
+        <div class="log-section">
+            <h3>Bot Logs</h3>
+            <ul id="logList"></ul>
+        </div>
+
+        <div class="action-buttons">
+            <button class="btn-trade" id="tradeButton" onclick="toggleTrade()">Start Trading</button>
+            <button class="btn-settings" onclick="navigateTo('settingsScreen')">Settings</button>
+        </div>
+    </div>
+
+    <div class="container hidden" id="connectScreen">
+        <h2>Connect MT4/MT5 Account</h2>
+        <form id="connectForm" onsubmit="connectToAccount(event)">
+            <div class="form-group">
+                <i class="fas fa-user"></i>
+                <input type="text" id="login" placeholder=" Login ID" required>
+            </div>
+
+            <div class="form-group">
+                <i class="fas fa-lock"></i>
+                <input type="password" id="password" placeholder="Password" required>
+            </div>
+
+            <div class="form-group">
+                <i class="fas fa-server"></i>
+                <input type="text" id="server" placeholder="MT5/MT4 Server" required>
+            </div>
+
+            <div class="form-group">
+                <i class="fas fa-key"></i>
+                <input type="text" id="licenseKey" placeholder="License Key" required>
+            </div>
+
+            <button type="submit" class="btn-connect">Connect</button>
+        </form>
+        <p style="text-align: center; margin-top: 10px;"><a href="#" style="color: #007bff;">Need help?</a></p>
+    </div>
+
+    <div class="container hidden" id="settingsScreen">
+        <h2>Risk Management Settings</h2>
+        <label>Max Risk Per Trade (%):</label>
+        <input type="number" id="riskPerTrade" placeholder="Enter max risk percentage"><br><br>
+
+        <label>Stop Loss (%):</label>
+        <input type="number" id="stopLoss" placeholder="Enter stop loss percentage"><br><br>
+
+        <label>Take Profit Multiplier:</label>
+        <input type="number" id="takeProfitMultiplier" placeholder="Enter TP multiplier"><br><br>
+
+        <label>Trade Size (Lots):</label>
+        <input type="number" id="tradeSize" placeholder="Enter trade size"><br><br>
+
+        <label>Copy All Trades</label>
+        <input type="checkbox" id="copyAllTrades"><br><br>
+
+        <label>Enable Notifications</label>
+        <input type="checkbox" id="enableNotifications"><br><br>
+
+        <button onclick="saveSettings()">Save Settings</button>
+    </div>
+
+    <div class="nav-bar">
+        <button onclick="navigateTo('homeScreen')">
+            <i class="fa fa-home"></i>
+            <span>Home</span>
+        </button>
+        <button onclick="navigateTo('connectScreen')">
+            <i class="fa fa-link"></i>
+            <span>Connect</span>
+        </button>
+        <button onclick="navigateTo('settingsScreen')">
+            <i class="fa fa-gear"></i>
+            <span>Settings</span>
+        </button>
+    </div>
+
+    <script>
+        const apiToken = 'de1ULSf6tf769gc';
+        const apiUrl = 'https://example.com/api'; // Replace with the actual API URL
+        const apiVersion = '1.0';
+
+        async function derivApiRequest(endpoint, params = {}) {
+            const headers = {
+                'Authorization': `Bearer ${apiToken}`,
+                'Content-Type': 'application/json',
+            };
+            const response = await fetch(`${apiUrl}/${apiVersion}/${endpoint}`, {
+                method: 'POST',
+                headers,
+                body: JSON.stringify(params),
+            });
+            return response.json();
+        }
+
+        async function openTrade(symbol, contractType, amount, duration) {
+            const params = { symbol, contract_type: contractType, amount, duration, duration_unit: 'm' };
+            const response = await derivApiRequest('open_contract', params);
+            return response.contract_id;
+        }
+
+        async function closeTrade(contractId) {
+            const params = { contract_id: contractId };
+            const response = await derivApiRequest('close_contract', params);
+            return response.success;
+        }
+
+        async function toggleTrade() {
+            const logList = document.getElementById('logList');
+            const tradeButton = document.getElementById('tradeButton');
+            const isTrading = tradeButton.textContent.includes('Start');
+
+            if (isTrading) {
+                tradeButton.textContent = 'Stop Trading';
+                logList.innerHTML += `<li>[${new Date().toLocaleTimeString()}] Trading started...</li>`;
+                await openTrade('R_50', 'CALL', 1, 1); // Example trade
+                logList.innerHTML += `<li>[${new Date().toLocaleTimeString()}] Trade opened...</li>`;
+            } else {
+                tradeButton.textContent = 'Start Trading';
+                logList.innerHTML += `<li>[${new Date().toLocaleTimeString()}] Trading stopped...</li>`;
+                await closeTrade('123456'); // Use actual contract ID here
+                logList.innerHTML += `<li>[${new Date().toLocaleTimeString()}] Trade closed...</li>`;
+            }
+        }
+
+        function navigateTo(screenId) {
+            document.querySelectorAll('.container').forEach(screen => screen.classList.add('hidden'));
+            document.getElementById(screenId).classList.remove('hidden');
+        }
+
+        function saveSettings() {
+            alert('Settings saved!');
+        }
+
+        function connectToAccount(event) {
+            event.preventDefault();
+            alert('Account connected!');
+        }
+    </script>
+</body>
+</html>
